@@ -12,10 +12,9 @@ def get_info():
         for line in f:
             data = json.loads(line)
             res.extend(data['data']['list'])
-    return res
+    return res #[1:2]
 
-
-def get_info_imgs(info):
+def get_info_imgs(info,host='http://aiss-1254466972.costj.myqcloud.com/picture'):
     """ 获取要下载的所有图片url、目录名、要存储的名字 """
     res = []
     for item in info:
@@ -25,7 +24,7 @@ def get_info_imgs(info):
         issue = item["issue"]
         pictureCount = item["pictureCount"]
         for pic_idx in range(pictureCount):
-            url = "http://com-pmkoo-img.oss-cn-beijing.aliyuncs.com/picture/%s/%s/%s.jpg" % (catalog, issue, pic_idx)
+            url = "%s/%s/%s/%s.jpg" % (host, catalog, issue, pic_idx)
             directory = os.path.join("data", name, "%s-%s" % (issue, nickname))
             filepath = os.path.join(directory, "%s.jpg" % pic_idx)
             # 每张图片一组，包含 图片url，所在目录，存储路径

@@ -2,6 +2,12 @@
 import requests
 import json
 
+def fetch_picture_url_header():
+    url = 'http://api.pmkoo.cn/aiss/system/config.do'
+    resp = requests.post(url)
+    json = resp.json()
+    url = json['data']['picture_url_header']
+    return url
 
 def download_info():
     """ 下载列表页（包含所有对图片的描述信息），并存储到data/info.txt文件中 """

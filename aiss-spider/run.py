@@ -10,6 +10,9 @@ if __name__ == '__main__':
     info = get_info()
     # 获取每张图片的url，存储文件夹，本地文件名
     imgs = get_info_imgs(info,host=fetch_picture_url_header())
-    # test imgs = imgs[-2:]
+
+    # test
+    # imgs = imgs[-11:]
+    #
     # 以10个进程并发下载图片
     download(imgs, processes=10)

@@ -3,6 +3,7 @@ import os
 import json
 import requests
 import time
+from urlparse import urljoin
 
 
 def get_info():
@@ -24,7 +25,8 @@ def get_info_imgs(info,host='http://aiss-1254466972.costj.myqcloud.com/picture')
         issue = item["issue"]
         pictureCount = item["pictureCount"]
         for pic_idx in range(pictureCount):
-            url = "%s/%s/%s/%s.jpg" % (host, catalog, issue, pic_idx)
+            url = "%s/%s/%s.jpg" % (catalog, issue, pic_idx)
+            url = urljoin(host, url)
             directory = os.path.join("data", name, "%s-%s" % (issue, nickname))
             filepath = os.path.join(directory, "%s.jpg" % pic_idx)
             # 每张图片一组，包含 图片url，所在目录，存储路径
@@ -45,12 +47,22 @@ def setup_download_dir(directory):
 
 from multiprocessing import Process, Queue, Pool
 
+def check_png(filepath):
+    from PIL import Image
+    try:
+        Image.open(filepath)
+        return True
+    except IOError:
+        # filename not an image file
+        return False
+    return False
 
 def download_one(img):
     """ 下载一张图片 """
     url, directory, filepath = img
     # 如果文件已经存在，放弃下载
-    if os.path.exists(filepath):
+    # if os.path.exists(filepath):
+    if check_png(filepath):
         print('exists:', filepath)
         return
 

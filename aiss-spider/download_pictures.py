@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
 import json
@@ -47,31 +48,23 @@ def setup_download_dir(directory):
 
 from multiprocessing import Process, Queue, Pool
 
-def check_png(filepath):
-    from PIL import Image
-    try:
-        Image.open(filepath)
-        return True
-    except IOError:
-        # filename not an image file
-        return False
-    return False
-
 def download_one(img):
     """ 下载一张图片 """
     url, directory, filepath = img
     # 如果文件已经存在，放弃下载
-    # if os.path.exists(filepath):
-    if check_png(filepath):
+    if os.path.exists(filepath):
         print('exists:', filepath)
         return
 
     setup_download_dir(directory)
     rsp = requests.get(url)
     print('start download', url)
-    with open(filepath, 'wb') as f:
-        f.write(rsp.content)
-        print('end download', url)
+    if rsp.status_code == 200:
+        with open(filepath, 'wb') as f:
+            f.write(rsp.content)
+            print('end download', url)
+    else:
+        print('download %s error.' % (url))
 
 
 def download(imgs, processes=10):
